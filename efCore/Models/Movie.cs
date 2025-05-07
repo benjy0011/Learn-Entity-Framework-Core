@@ -20,11 +20,24 @@ public class Movie
     //[Column("Plot", TypeName = "varchar(max)")]
     public string? Synopsis { get; set; }  
     
+    public AgeRating AgeRating { get; set; }
 
 
     public Genre? Genre { get; set; } // like this is enough to declare 1 to many
     public int? MainGenreId { get; set; }
 }
+
+
+public enum AgeRating
+{
+    All = 0,
+    ElementarySchool = 6,
+    HighSchool = 12,
+    Adolescent = 16,
+    Adult = 18
+}
+
+
 
 public class MovieTitle
 {

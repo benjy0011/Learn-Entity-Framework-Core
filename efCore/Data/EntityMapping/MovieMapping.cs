@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Emit;
+using efCore.API.Data.ValueConverters;
 using efCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,14 +17,20 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
         builder.Property(movie => movie.Title)
             .HasColumnType("varchar")
             .HasMaxLength(128)
-        .IsRequired();
+            .IsRequired();
 
         builder.Property(movie => movie.ReleaseDate)
-            .HasColumnType("date");
+            //.HasColumnType("date");
+            .HasColumnType("char(8)")
+            .HasConversion(new DateTimeToChar8Converter());  // value conversion in EF
 
         builder.Property(movie => movie.Synopsis)
             .HasColumnType("varchar(max)")
             .HasColumnName("Plot");
+
+        builder.Property(movie => movie.AgeRating)
+            .HasColumnType("varchar(32)")
+            .HasConversion<string>();  // convert 18 to 'Adult', but will cause misbehaviour cuz diff data type
 
 
         // Movie (many to one) Genre
@@ -43,7 +50,8 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             Title = "Fight Club",
             ReleaseDate = new DateTime(1999, 9, 10),
             Synopsis = "Ed Norton and Brad Pitt have a couple of fist fights with each other.",
-            MainGenreId = 1
+            MainGenreId = 1,
+            AgeRating = AgeRating.Adolescent
         });
     }
 }
