@@ -22,6 +22,10 @@ public class Movie
     
     public AgeRating AgeRating { get; set; }
 
+    public Person Director { get; set; }
+
+    public ICollection<Person> Actors { get; set; }
+
 
     public Genre? Genre { get; set; } // like this is enough to declare 1 to many
     public int? MainGenreId { get; set; }

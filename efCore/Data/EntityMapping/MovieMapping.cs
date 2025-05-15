@@ -12,6 +12,7 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
     {
         builder // create a table based on 'Movie' model
             .ToTable("Picture") // create a table and change/give a name like earlier
+            .HasQueryFilter(movie => movie.ReleaseDate >= new DateTime(2000, 1, 1)) // Filter and not visible to user (only in SQL), logic is add WHERE in every clause
             .HasKey(movie => movie.Id);
 
         builder.Property(movie => movie.Title)
@@ -31,6 +32,20 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
         builder.Property(movie => movie.AgeRating)
             .HasColumnType("varchar(32)")
             .HasConversion<string>();  // convert 18 to 'Adult', but will cause misbehaviour cuz diff data type
+
+
+        builder.OwnsOne(movie => movie.Director) // more power and control
+            .ToTable("Movie_Directors"); // move them to a child(seperated) table 
+        //builder.ComplexProperty(movie => movie.Director);
+        //.Property(director => director.FirstName) // can use this for further config
+
+
+
+        builder.OwnsMany(movie => movie.Actors) // more power and control
+            .ToTable("Movie_Actors"); // move them to a child(seperated) table 
+
+
+
 
 
         // Movie (many to one) Genre
@@ -53,5 +68,18 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             MainGenreId = 1,
             AgeRating = AgeRating.Adolescent
         });
+
+
+
+        builder.OwnsOne(movie => movie.Director)
+            .HasData(new { MovieId = 1, FirstName = "David", LastName = "Fincher" });
+
+
+        builder.OwnsMany(movie => movie.Actors)
+            .HasData(
+                new { MovieId = 1, Id = 1, FirstName = "Edward", LastName = "Norton" },
+                new { MovieId = 1, Id = 2, FirstName = "Brad", LastName = "Pitt" }
+            );
+    
     }
 }

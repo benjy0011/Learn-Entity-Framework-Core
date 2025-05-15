@@ -1,4 +1,5 @@
-﻿using efCore.API.Models;
+﻿using efCore.API.Data.ValueGenerators;
+using efCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,6 +14,16 @@ public class GenreMapping : IEntityTypeConfiguration<Genre>
         //    .WithOne(movie => movie.Genre)
         //    .HasPrincipalKey(genre => genre.Id)
         //    .HasForeignKey(movie => movie.MainGenreId);
+
+        //builder.Property(genre => genre.CreatedDate)
+        //    //.HasDefaultValue(DateTime.Now); // one method
+        //    //.HasDefaultValueSql("getdate()"); // generate default value at sql side
+        //    //.HasDefaultValueSql("GETUTCDATE() AT TIME ZONE 'UTC' AT TIME ZONE 'Singapore Standard Time'"); // convert to Singapore TimeZone
+        //    .HasValueGenerator<CreatedDateGenerator>(); // use custom generator
+
+        builder.Property<DateTime>("CreatedDate")
+            .HasColumnName("CreatedAt")
+            .HasValueGenerator<CreatedDateGenerator>();
 
         builder.HasData(new Genre
         {
